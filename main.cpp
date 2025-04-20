@@ -2,6 +2,7 @@
 #include"Struct.h"
 #include"Const.h"
 #include"Matrix4x4.h"
+#include"Camera.h"
 
 
 const char kWindowTitle[] = "学籍番号";
@@ -16,9 +17,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	Vector3 scale = { 1.2f,-.79f,-2.1f };
-	Vector3 rotate = { 0.4f,1.43f,-0.8f };
-	Vector3 translate = { 2.7f,-4.15f,1.57f };
+	Matrix4x4 orthographicMatrix =
+		MakeOrthographicMatrix(-160.0f, 160.0f, 200.0f, 300.0f, 0.0f, 1000.0f);
+	Matrix4x4 perspectiveMatrix =
+		MakePerspectiveFovMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
+	Matrix4x4 viewportMatrix =
+		MakeViewportMatrix(100.0f, 200.0f, 600.0f, 300.0f, 0.0f, 1.0f);
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -32,7 +37,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		Matrix4x4 worldMatrix = MakeAffineMatrix(scale, rotate, translate);
+		
 
 		///
 		/// ↑更新処理ここまで
@@ -42,7 +47,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		MatrixScreenPrintf(0, 0, worldMatrix, "worldmatrix");
+		MatrixScreenPrintf(0, 0, orthographicMatrix, "OrthographicMatrix");
+
+		MatrixScreenPrintf(0, kRowHeight * 5, perspectiveMatrix, "PerspectiveMatrix");
+
+		MatrixScreenPrintf(0, kRowHeight * 10, viewportMatrix, "ViewportMatrix");
 
 		///
 		/// ↑描画処理ここまで
