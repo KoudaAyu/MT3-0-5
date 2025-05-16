@@ -30,21 +30,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/*uint32_t LineColor = 0x000000FF;*/
 
-	Sphere* sphere[2];
-	sphere[0] = new Sphere();
-	sphere[1] = new Sphere();
+	Sphere* sphere = new Sphere();
+	sphere->center = { 0.0f,0.0f,0.0f };
+	sphere->radius = 1.0f;
+
 	
-
-	sphere[0]->center = { 0.0f,0.0f,0.0f };
-	sphere[0]->radius = 1.0f;
-
-	sphere[1]->center = { 1.0f,0.0f,1.0f };
-	sphere[1]->radius = 0.4f;
-
-	uint32_t colors[2] = { WHITE,WHITE };
-
-	float distance = 0.0f;
-
 	Segment segment{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
 	Vector3 point{ -1.5f,0.6f,0.6f };
 
@@ -126,16 +116,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
 		Matrix4x4 viewProjectMatrix = Multiply(viewMatrix, projectionMatrix);
 		
-		distance = Sphere::GetDistanceBetweenCenters(*sphere[0], *sphere[1]);
-
-		if (distance < sphere[0]->radius + sphere[1]->radius)
-		{
-			colors[0] = RED;
-		}
-		else
-		{
-			colors[0] = WHITE;
-		}
+		
 
 		///
 		/// ↑更新処理ここまで
@@ -146,28 +127,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 
-	
-	
-		
-
-		
 		DrawGrid(viewProjectMatrix, viewportMatrix);
 
-		
-		sphere[0]->SphereDraw(*sphere[0], viewProjectMatrix, viewportMatrix, colors[0]);
-		sphere[1]->SphereDraw(*sphere[1], viewProjectMatrix, viewportMatrix, colors[1]);
+		Sphere pointSphere(point, 0.01f);
+		Sphere closestPointSphere{ closestPoint, 0.01f };
 
+		sphere->SphereDraw(pointSphere, viewProjectMatrix, viewportMatrix, RED);
+		sphere->SphereDraw(closestPointSphere, viewProjectMatrix, viewportMatrix, BLACK);
 		
+		Vector3 start = VectorTransform(VectorTransform(segment.origin, viewProjectMatrix), viewportMatrix);
+		Vector3 end = VectorTransform(VectorTransform(VectorAdd(segment.origin, segment.diff), viewProjectMatrix), viewportMatrix);
 
+		Novice::DrawLine(
+			static_cast<int>(start.x),
+			static_cast<int>(start.y),
+			static_cast<int>(end.x),
+			static_cast<int>(end.y),
+			0xFFFFFFFF
+		);
 		
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("Sphere0 Center", &sphere[0]->center.x, 0.01f);
-		ImGui::DragFloat("Sphere0 Radius", &sphere[0]->radius, 0.01f);
-		ImGui::DragFloat3("Sphere1 Center", &sphere[1]->center.x, 0.01f);
-		ImGui::DragFloat("Sphere1 Radius", &sphere[1]->radius, 0.01f);
+		ImGui::DragFloat3("SphereCenter", &sphere->center.x, 0.01f);
+		ImGui::DragFloat("SphereRadius", &sphere->radius, 0.01f);
 
 		/*ImGui::InputFloat3("Project",&project.x,"%0.3f",ImGuiInputFlags_ReadOnly);*/
 
