@@ -4,11 +4,12 @@
 
 #include"Struct.h"
 #include"Const.h"
+#include"Line.h"
 #include"Matrix4x4.h"
 #include"Camera.h"
 #include"Grid.h"
 #include"Sphere.h"
-
+#include"Vector.h"
 
 
 const char kWindowTitle[] = "学籍番号";
@@ -26,12 +27,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraTranslate(0.0f, 1.9f, -6.49f);
 	Vector3 cameraRotate(0.26f, 0.0f, 0.0f);
 
-	uint32_t LineColor = 0x000000FF;
+	/*uint32_t LineColor = 0x000000FF;*/
 
 	Sphere* sphere = new Sphere();
 
 	sphere->center = { 0.0f,0.0f,0.0f };
 	sphere->radius = 1.0f;
+
+
+	Segment segment{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
+	Vector3 point{ -1.5f,0.6f,0.6f };
+
+	Vector3 project = VectorProject(VectorSubtract(point, segment.origin), segment.diff);
+	Vector3 closestPoint = VectorClosestPoint(point, segment);
 	
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -65,11 +73,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		sphere->SphereDraw(*sphere,viewProjectMatrix,viewportMatrix,LineColor);
+		/*sphere->SphereDraw(*sphere,viewProjectMatrix,viewportMatrix,LineColor);*/
 
 		DrawGrid(viewProjectMatrix, viewportMatrix);
 
+		Sphere pointSphere(point, 0.01f);
+		Sphere closestPointSphere{ closestPoint,0.01f };
 	
+		sphere->SphereDraw(pointSphere, viewProjectMatrix, viewportMatrix, RED);
+		sphere->SphereDraw(closestPointSphere, viewProjectMatrix, viewportMatrix, BLACK);
+
+		
+
+		Vector3 start = VectorTransform(VectorTransform(segment.origin, viewProjectMatrix), viewportMatrix);
+		Vector3 end = VectorTransform(VectorTransform(VectorAdd(segment.origin, segment.diff), viewProjectMatrix), viewportMatrix);
+
+		Novice::DrawLine(
+			static_cast<int>(start.x),
+			static_cast<int>(start.y),
+			static_cast<int>(end.x),
+			static_cast<int>(end.y),
+			0xFFFFFFFF
+			);
 
 
 		ImGui::Begin("Window");
@@ -77,6 +102,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		ImGui::DragFloat3("SphereCenter", &sphere->center.x, 0.01f);
 		ImGui::DragFloat("SphereRadius", &sphere->radius, 0.01f);
+
+		/*ImGui::InputFloat3("Project",&project.x,"%0.3f",ImGuiInputFlags_ReadOnly);*/
 
 		ImGui::End();
 
