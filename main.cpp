@@ -72,6 +72,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		int mouseX, mouseY;
 		Novice::GetMousePosition(&mouseX, &mouseY);
+
+		//SPACEを押すと起動される
+		//もう一度押すとOFF
 		if (keys[DIK_SPACE])
 		{
 			isDebug_ = !isDebug_;
