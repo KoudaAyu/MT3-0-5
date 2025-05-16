@@ -3,12 +3,14 @@
 #include <cmath>
 #include<imgui.h>
 
-#include"Struct.h"
+
 #include"Const.h"
 #include"Line.h"
 #include"Matrix4x4.h"
 #include"Camera.h"
 #include"Grid.h"
+#include"Plane.h"
+#include"Struct.h"
 #include"Sphere.h"
 #include"Vector.h"
 
