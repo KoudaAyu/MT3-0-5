@@ -15,6 +15,7 @@
 #include"Vector.h"
 
 
+
 const char kWindowTitle[] = "学籍番号";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -32,9 +33,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/*uint32_t LineColor = 0x000000FF;*/
 
-	Sphere* sphere = new Sphere();
-	sphere->center = { 0.0f,0.0f,0.0f };
-	sphere->radius = 1.0f;
+
+	Sphere* sphere[2];
+	sphere[0] = new Sphere();
+	sphere[1] = new Sphere();
+
+	Plane* plane = new Plane();
+	plane->normal = Normalize({ 1.0f, 1.0f, 0.0f });
+	plane->distance = 0.0f;
+	
+
+	sphere[0]->center = { 0.0f,0.0f,0.0f };
+	sphere[0]->radius = 1.0f;
+
+	sphere[1]->center = { 1.0f,0.0f,1.0f };
+	sphere[1]->radius = 0.4f;
+
+	uint32_t colors[2] = { WHITE,WHITE };
+
+	float distance = 0.0f;
 
 	
 	Segment segment{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
@@ -117,8 +134,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, 1280, 720, 0.0f, 0.0f);
 		
 		Matrix4x4 viewProjectMatrix = Multiply(viewMatrix, projectionMatrix);
+
+		Prependicular(plane->normal);
+
+		DrawPlane(*plane, viewProjectMatrix, viewMatrix, colors[0]);
 		
+
+		distance = Sphere::GetDistanceBetweenCenters(*sphere[0], *sphere[1]);
+
+		if (IsCollision(*sphere[0], *plane)) // sphere[0] との当たり判定
+		{
+			colors[0] = RED;
+		}
+		else
+		{
+			colors[0] = WHITE;
+		}
+
 		
+
+
+		/*if (distance < sphere[0]->radius + sphere[1]->radius)
+		{
+			colors[0] = RED;
+		}
+		else
+		{
+			colors[0] = WHITE;
+		}*/
 
 		///
 		/// ↑更新処理ここまで
@@ -137,6 +180,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		sphere->SphereDraw(pointSphere, viewProjectMatrix, viewportMatrix, RED);
 		sphere->SphereDraw(closestPointSphere, viewProjectMatrix, viewportMatrix, BLACK);
 		
+
+		sphere[0]->SphereDraw(*sphere[0], viewProjectMatrix, viewportMatrix, colors[0]);
+	/*	sphere[1]->SphereDraw(*sphere[1], viewProjectMatrix, viewportMatrix, colors[1]);*/
+		DrawPlane(*plane, viewProjectMatrix, viewportMatrix,WHITE);
+		
+
+		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
+		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
+		ImGui::DragFloat3("Sphere0 Center", &sphere[0]->center.x, 0.01f);
+		ImGui::DragFloat("Sphere0 Radius", &sphere[0]->radius, 0.01f);
+=======
 
 		Vector3 start = VectorTransform(VectorTransform(segment.origin, viewProjectMatrix), viewportMatrix);
 		Vector3 end = VectorTransform(VectorTransform(VectorAdd(segment.origin, segment.diff), viewProjectMatrix), viewportMatrix);
@@ -157,6 +211,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("SphereCenter", &sphere->center.x, 0.01f);
 		ImGui::DragFloat("SphereRadius", &sphere->radius, 0.01f);
 
+
+
+		ImGui::DragFloat3("Plane.Normal", &plane->normal.x, 0.01f);
+		plane->normal = Normalize(plane->normal);
+		ImGui::DragFloat("Plane.Distance", &plane->distance, 0.01f); // ← これを追加
 		/*ImGui::InputFloat3("Project",&project.x,"%0.3f",ImGuiInputFlags_ReadOnly);*/
 
 		ImGui::End();
