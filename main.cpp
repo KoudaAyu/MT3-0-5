@@ -3,12 +3,14 @@
 #include <cmath>
 #include<imgui.h>
 
-#include"Struct.h"
+
 #include"Const.h"
 #include"Line.h"
 #include"Matrix4x4.h"
 #include"Camera.h"
 #include"Grid.h"
+#include"Plane.h"
+#include"Struct.h"
 #include"Sphere.h"
 #include"Vector.h"
 
@@ -135,6 +137,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		sphere->SphereDraw(pointSphere, viewProjectMatrix, viewportMatrix, RED);
 		sphere->SphereDraw(closestPointSphere, viewProjectMatrix, viewportMatrix, BLACK);
 		
+
 		Vector3 start = VectorTransform(VectorTransform(segment.origin, viewProjectMatrix), viewportMatrix);
 		Vector3 end = VectorTransform(VectorTransform(VectorAdd(segment.origin, segment.diff), viewProjectMatrix), viewportMatrix);
 
@@ -146,6 +149,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			0xFFFFFFFF
 		);
 		
+
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
