@@ -167,7 +167,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("Sphere1 Center", &sphere[1]->center.x, 0.01f);
 		ImGui::DragFloat("Sphere1 Radius", &sphere[1]->radius, 0.01f);
 
-		/*ImGui::InputFloat3("Project",&project.x,"%0.3f",ImGuiInputFlags_ReadOnly);*/
+		ImGui::InputFloat3("Project",&project.x,"%0.3f", ImGuiInputTextFlags_ReadOnly);
 
 		ImGui::End();
 
