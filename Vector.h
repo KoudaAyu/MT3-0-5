@@ -19,3 +19,4 @@ Vector3 VectorClosestPoint(const Vector3& point, const Segment& segment);
 Vector3 Normalize(const Vector3& v);
 
 float VectorDot(const Vector3& v1,const Vector3& v2);
+
