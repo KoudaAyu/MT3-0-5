@@ -12,6 +12,7 @@
 #include"Plane.h"
 #include"Struct.h"
 #include"Sphere.h"
+#include"Triangle.h"
 #include"Vector.h"
 
 
@@ -63,6 +64,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	Vector3 project = VectorProject(VectorSubtract(point, segment.origin), segment.diff);
 	Vector3 closestPoint = VectorClosestPoint(point, segment);
+
+	Triangle triangle;
+	triangle.vertices[0] = { -1.0f,0.0f,0.0f };
+	triangle.vertices[1] = { 0.0f,1.0f,0.0f };
+	triangle.vertices[2] = { 1.0f,0.0f,0.0f };
 
 	// マウス状態
 	int prevMouseX = 0;
@@ -144,7 +150,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		Prependicular(plane->normal);
 
-		if (IsCollisionSegment(segment, *plane))
+		if (IsCollisionTriangle(triangle,segment))
 		{
 			colors[0] = RED;
 		}
@@ -163,20 +169,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		///
 		DrawGrid(viewProjectMatrix, viewportMatrix);
 
-		DrawPlane(*plane, viewProjectMatrix, viewportMatrix, WHITE);
-
+		
 		SegmentDraw(segment, viewProjectMatrix, viewportMatrix,colors[0]);
 
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		
-		ImGui::DragFloat3("Plane.Normal", &plane->normal.x, 0.01f);
-		plane->normal = Normalize(plane->normal);
+		/*ImGui::DragFloat3("Plane.Normal", &plane->normal.x, 0.01f);
+		plane->normal = Normalize(plane->normal);*/
 
 		ImGui::DragFloat3("Segment.Origine", &segment.origin.x, 0.01f);
 		ImGui::DragFloat3("Segment.Diff", &segment.diff.x, 0.01f);
 
-	
+		DrawTriangle(triangle, viewProjectMatrix, viewportMatrix, WHITE);
+		ImGui::DragFloat3("Trianglev0", &triangle.vertices[0].x, 0.01f);
+		ImGui::DragFloat3("Trianglev1", &triangle.vertices[1].x, 0.01f);
+		ImGui::DragFloat3("Trianglev2", &triangle.vertices[2].x, 0.01f);
 
 		ImGui::End();
 
