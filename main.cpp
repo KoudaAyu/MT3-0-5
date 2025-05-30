@@ -5,6 +5,7 @@
 
 #include"AABB.h"
 #include"Bezier.h"
+#include"Bone.h"
 #include"Const.h"
 #include"Line.h"
 #include"Matrix4x4.h"
@@ -82,6 +83,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bezier[0].controlPositions = { -0.8f,0.58f,1.0f };
 	bezier[1].controlPositions = { -1.76f,1.0f,-0.3f };
 	bezier[2].controlPositions = { -0.94f,-0.7f,2.3f };
+
+	Bone bone[3];
+	bone[0].translates = { 0.2f,1.0f,0.0f };
+	bone[1].translates = { 0.4f,0.0f,0.0f };
+	bone[2].translates = { 0.3f,0.0f,0.0f };
+
+	bone[0].rotates = { 0.0f,0.0f,-6.8f };
+	bone[1].rotates = { 0.0f,0.0f,-1.4f };
+	bone[2].rotates = { 0.0f,0.0f,0.0f };
+
+	bone[0].scales = { 1.0f,1.0f,1.0f };
+	bone[1].scales = { 1.0f,1.0f,1.0f };
+	bone[2].scales = { 1.0f,1.0f,1.0f };
 
 	// マウス状態
 	int prevMouseX = 0;
@@ -181,6 +195,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		ImGui::DragFloat3("Sphere.center", &sphere[0]->center.x, 0.1f);
 		ImGui::DragFloat("SphereRadius", &sphere[0]->radius, 0.1f);*/
 
+		
 
 		//SegmentDraw(segment, viewProjectMatrix, viewportMatrix,WHITE);
 		//ImGui::DragFloat3("Segment.Origine", &segment.origin.x, 0.01f);
