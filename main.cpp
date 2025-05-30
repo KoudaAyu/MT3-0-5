@@ -3,7 +3,7 @@
 #include <cmath>
 #include<imgui.h>
 
-
+#include"AABB.h"
 #include"Const.h"
 #include"Line.h"
 #include"Matrix4x4.h"
@@ -57,18 +57,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Segment segment;
 
 	//値変えられるようにする
-	segment.origin = { -0.45f, 0.3f, 0.0f };
-	segment.diff = VectorSubtract({ 1.0f, 0.5f, 0.0f }, segment.origin);  // 初期値として差分を設定;
+/*	segment.origin = { -0.45f, 0.3f, 0.0f };
+	segment.diff = VectorSubtract({ 1.0f, 0.5f, 0.0f }, segment.origin); */ // 初期値として差分を設定;
 
 	Vector3 point{ -1.5f,0.6f,0.6f };
 
 	Vector3 project = VectorProject(VectorSubtract(point, segment.origin), segment.diff);
 	Vector3 closestPoint = VectorClosestPoint(point, segment);
 
-	Triangle triangle;
+	/*Triangle triangle;
 	triangle.vertices[0] = { -1.0f,0.0f,0.0f };
 	triangle.vertices[1] = { 0.0f,1.0f,0.0f };
-	triangle.vertices[2] = { 1.0f,0.0f,0.0f };
+	triangle.vertices[2] = { 1.0f,0.0f,0.0f };*/
+
+	AABB aabb[2];
+	aabb[0].min = { -0.5f,-0.5f,-0.5f };
+	aabb[0].max = { 0.0f,0.0f,0.0f };
+
+	aabb[1].min = { 0.2f,0.2f,0.2f };
+	aabb[1].max = { 1.0f,1.0f,1.0f };
+	
 
 	// マウス状態
 	int prevMouseX = 0;
@@ -150,7 +158,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		Prependicular(plane->normal);
 
-		if (IsCollisionTriangle(triangle,segment))
+		if (IsCollisionAABB(aabb[0],aabb[1]))
 		{
 			colors[0] = RED;
 		}
@@ -167,25 +175,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		///
 		/// ↓描画処理ここから
 		///
-		DrawGrid(viewProjectMatrix, viewportMatrix);
-
-		
-		SegmentDraw(segment, viewProjectMatrix, viewportMatrix,colors[0]);
 
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
+
+		DrawGrid(viewProjectMatrix, viewportMatrix);
+
+		//SegmentDraw(segment, viewProjectMatrix, viewportMatrix,colors[0]);*/
+
 		
 		/*ImGui::DragFloat3("Plane.Normal", &plane->normal.x, 0.01f);
 		plane->normal = Normalize(plane->normal);*/
 
-		ImGui::DragFloat3("Segment.Origine", &segment.origin.x, 0.01f);
-		ImGui::DragFloat3("Segment.Diff", &segment.diff.x, 0.01f);
+	/*	ImGui::DragFloat3("Segment.Origine", &segment.origin.x, 0.01f);
+		ImGui::DragFloat3("Segment.Diff", &segment.diff.x, 0.01f);*/
 
-		DrawTriangle(triangle, viewProjectMatrix, viewportMatrix, WHITE);
+		/*DrawTriangle(triangle, viewProjectMatrix, viewportMatrix, WHITE);
 		ImGui::DragFloat3("Trianglev0", &triangle.vertices[0].x, 0.01f);
 		ImGui::DragFloat3("Trianglev1", &triangle.vertices[1].x, 0.01f);
-		ImGui::DragFloat3("Trianglev2", &triangle.vertices[2].x, 0.01f);
+		ImGui::DragFloat3("Trianglev2", &triangle.vertices[2].x, 0.01f);*/
 
+		DrawAABB(aabb[0], viewProjectMatrix, viewportMatrix, colors[0]);
+		DrawAABB(aabb[1], viewProjectMatrix, viewportMatrix, WHITE);
+		
+
+		ImGui::DragFloat3("aabb1.min", &aabb[0].min.x, 0.1f);
+		ImGui::DragFloat3("aabb1.max", &aabb[0].max.x, 0.1f);
+		ImGui::DragFloat3("aabb2.min", &aabb[1].min.x, 0.1f);
+		ImGui::DragFloat3("aabb2.max", &aabb[1].max.x, 0.1f);
 		ImGui::End();
 
 
