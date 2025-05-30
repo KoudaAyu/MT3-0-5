@@ -50,6 +50,9 @@
     <ClCompile Include="Bezier.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Bone.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -145,5 +148,6 @@
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Bezier.h" />
+    <ClInclude Include="Bone.h" />
   </ItemGroup>
 </Project>
