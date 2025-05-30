@@ -158,7 +158,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		Prependicular(plane->normal);
 
-		if (IsCollisionAABB(aabb[0],aabb[1]))
+		if (IsCollisionAABBSphere(aabb[0],*sphere[0]))
 		{
 			colors[0] = RED;
 		}
@@ -181,6 +181,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		DrawGrid(viewProjectMatrix, viewportMatrix);
 
+		sphere[0]->DrawSphere(*sphere[0], viewProjectMatrix, viewportMatrix, WHITE);
+		ImGui::DragFloat3("Sphere.center", &sphere[0]->center.x, 0.1f);
+		ImGui::DragFloat("SphereRadius", &sphere[0]->radius, 0.1f);
+		
+
 		//SegmentDraw(segment, viewProjectMatrix, viewportMatrix,colors[0]);*/
 
 		
@@ -196,13 +201,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		ImGui::DragFloat3("Trianglev2", &triangle.vertices[2].x, 0.01f);*/
 
 		DrawAABB(aabb[0], viewProjectMatrix, viewportMatrix, colors[0]);
-		DrawAABB(aabb[1], viewProjectMatrix, viewportMatrix, WHITE);
+		/*DrawAABB(aabb[1], viewProjectMatrix, viewportMatrix, WHITE);*/
+
 		
 
-		ImGui::DragFloat3("aabb1.min", &aabb[0].min.x, 0.1f);
-		ImGui::DragFloat3("aabb1.max", &aabb[0].max.x, 0.1f);
-		ImGui::DragFloat3("aabb2.min", &aabb[1].min.x, 0.1f);
-		ImGui::DragFloat3("aabb2.max", &aabb[1].max.x, 0.1f);
+		ImGui::DragFloat3("aabb0.min", &aabb[0].min.x, 0.1f);
+		ImGui::DragFloat3("aabb0.max", &aabb[0].max.x, 0.1f);
+	/*	ImGui::DragFloat3("aabb2.min", &aabb[1].min.x, 0.1f);
+		ImGui::DragFloat3("aabb2.max", &aabb[1].max.x, 0.1f);*/
 		ImGui::End();
 
 
