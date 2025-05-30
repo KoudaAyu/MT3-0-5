@@ -4,6 +4,7 @@
 #include<imgui.h>
 
 #include"AABB.h"
+#include"Bezier.h"
 #include"Const.h"
 #include"Line.h"
 #include"Matrix4x4.h"
@@ -53,7 +54,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	uint32_t colors[2] = { WHITE,WHITE };
 
-	
+
 	Segment segment;
 
 	//値変えられるようにする
@@ -76,7 +77,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	aabb[1].min = { 0.2f,0.2f,0.2f };
 	aabb[1].max = { 1.0f,1.0f,1.0f };
-	
+
+	Bezier bezier[3];
+	bezier[0].controlPositions = { -0.8f,0.58f,1.0f };
+	bezier[1].controlPositions = { -1.76f,1.0f,-0.3f };
+	bezier[2].controlPositions = { -0.94f,-0.7f,2.3f };
 
 	// マウス状態
 	int prevMouseX = 0;
@@ -158,16 +163,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		Prependicular(plane->normal);
 
-		if (IsCollisionAABBSegment(aabb[0],segment))
-		{
-			colors[0] = RED;
-		}
-		else
-		{
-			colors[0] = WHITE;
-		}
 
-		
 		///
 		/// ↑更新処理ここまで
 		///
@@ -184,31 +180,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		/*sphere[0]->DrawSphere(*sphere[0], viewProjectMatrix, viewportMatrix, WHITE);
 		ImGui::DragFloat3("Sphere.center", &sphere[0]->center.x, 0.1f);
 		ImGui::DragFloat("SphereRadius", &sphere[0]->radius, 0.1f);*/
-		
 
-		SegmentDraw(segment, viewProjectMatrix, viewportMatrix,WHITE);
-		ImGui::DragFloat3("Segment.Origine", &segment.origin.x, 0.01f);
-		ImGui::DragFloat3("Segment.Diff", &segment.diff.x, 0.01f);
-		
+
+		//SegmentDraw(segment, viewProjectMatrix, viewportMatrix,WHITE);
+		//ImGui::DragFloat3("Segment.Origine", &segment.origin.x, 0.01f);
+		//ImGui::DragFloat3("Segment.Diff", &segment.diff.x, 0.01f);
+
 		/*ImGui::DragFloat3("Plane.Normal", &plane->normal.x, 0.01f);
 		plane->normal = Normalize(plane->normal);*/
 
-	
+
 
 		/*DrawTriangle(triangle, viewProjectMatrix, viewportMatrix, WHITE);
 		ImGui::DragFloat3("Trianglev0", &triangle.vertices[0].x, 0.01f);
 		ImGui::DragFloat3("Trianglev1", &triangle.vertices[1].x, 0.01f);
 		ImGui::DragFloat3("Trianglev2", &triangle.vertices[2].x, 0.01f);*/
 
-		DrawAABB(aabb[0], viewProjectMatrix, viewportMatrix, colors[0]);
+		/*DrawAABB(aabb[0], viewProjectMatrix, viewportMatrix, colors[0]);*/
 		/*DrawAABB(aabb[1], viewProjectMatrix, viewportMatrix, WHITE);*/
 
-		
 
-		ImGui::DragFloat3("aabb0.min", &aabb[0].min.x, 0.1f);
-		ImGui::DragFloat3("aabb0.max", &aabb[0].max.x, 0.1f);
-	/*	ImGui::DragFloat3("aabb2.min", &aabb[1].min.x, 0.1f);
-		ImGui::DragFloat3("aabb2.max", &aabb[1].max.x, 0.1f);*/
+
+		/*ImGui::DragFloat3("aabb0.min", &aabb[0].min.x, 0.1f);
+		ImGui::DragFloat3("aabb0.max", &aabb[0].max.x, 0.1f);*/
+		/*	ImGui::DragFloat3("aabb2.min", &aabb[1].min.x, 0.1f);
+			ImGui::DragFloat3("aabb2.max", &aabb[1].max.x, 0.1f);*/
+
+		DrawBezier(bezier[0].controlPositions, bezier[1].controlPositions, bezier[2].controlPositions,
+			viewProjectMatrix, viewportMatrix, BLUE);
+		ImGui::DragFloat3("controlPosition[0]", &bezier[0].controlPositions.x, 0.1f);
+		ImGui::DragFloat3("controlPosition[1]", &bezier[1].controlPositions.x, 0.1f);
+		ImGui::DragFloat3("controlPosition[2]", &bezier[2].controlPositions.x, 0.1f);
+
 		ImGui::End();
 
 
