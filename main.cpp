@@ -57,8 +57,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Segment segment;
 
 	//値変えられるようにする
-/*	segment.origin = { -0.45f, 0.3f, 0.0f };
-	segment.diff = VectorSubtract({ 1.0f, 0.5f, 0.0f }, segment.origin); */ // 初期値として差分を設定;
+	segment.origin = { -0.7f, 0.3f, 0.0f };
+	segment.diff = VectorSubtract({ 2.0f, -0.5f, 0.0f }, segment.origin);  // 初期値として差分を設定;
 
 	Vector3 point{ -1.5f,0.6f,0.6f };
 
@@ -72,7 +72,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	AABB aabb[2];
 	aabb[0].min = { -0.5f,-0.5f,-0.5f };
-	aabb[0].max = { 0.0f,0.0f,0.0f };
+	aabb[0].max = { 0.5f,0.5f,0.5f };
 
 	aabb[1].min = { 0.2f,0.2f,0.2f };
 	aabb[1].max = { 1.0f,1.0f,1.0f };
@@ -158,7 +158,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		Prependicular(plane->normal);
 
-		if (IsCollisionAABBSphere(aabb[0],*sphere[0]))
+		if (IsCollisionAABBSegment(aabb[0],segment))
 		{
 			colors[0] = RED;
 		}
@@ -181,19 +181,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		DrawGrid(viewProjectMatrix, viewportMatrix);
 
-		sphere[0]->DrawSphere(*sphere[0], viewProjectMatrix, viewportMatrix, WHITE);
+		/*sphere[0]->DrawSphere(*sphere[0], viewProjectMatrix, viewportMatrix, WHITE);
 		ImGui::DragFloat3("Sphere.center", &sphere[0]->center.x, 0.1f);
-		ImGui::DragFloat("SphereRadius", &sphere[0]->radius, 0.1f);
+		ImGui::DragFloat("SphereRadius", &sphere[0]->radius, 0.1f);*/
 		
 
-		//SegmentDraw(segment, viewProjectMatrix, viewportMatrix,colors[0]);*/
-
+		SegmentDraw(segment, viewProjectMatrix, viewportMatrix,WHITE);
+		ImGui::DragFloat3("Segment.Origine", &segment.origin.x, 0.01f);
+		ImGui::DragFloat3("Segment.Diff", &segment.diff.x, 0.01f);
 		
 		/*ImGui::DragFloat3("Plane.Normal", &plane->normal.x, 0.01f);
 		plane->normal = Normalize(plane->normal);*/
 
-	/*	ImGui::DragFloat3("Segment.Origine", &segment.origin.x, 0.01f);
-		ImGui::DragFloat3("Segment.Diff", &segment.diff.x, 0.01f);*/
+	
 
 		/*DrawTriangle(triangle, viewProjectMatrix, viewportMatrix, WHITE);
 		ImGui::DragFloat3("Trianglev0", &triangle.vertices[0].x, 0.01f);
