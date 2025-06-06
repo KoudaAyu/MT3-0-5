@@ -37,21 +37,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	/*uint32_t LineColor = 0x000000FF;*/
 
-	Sphere* sphere[2];
-	sphere[0] = new Sphere();
-	sphere[1] = new Sphere();
+	
 
 	Plane* plane = new Plane();
 	plane->normal = Normalize({ 1.0f, 1.0f, 0.0f });
 	plane->distance = 0.0f;
 
-
+	/*Sphere* sphere[2];
+	sphere[0] = new Sphere();
+	sphere[1] = new Sphere();
 
 	sphere[0]->center = { 0.0f,0.0f,0.0f };
 	sphere[0]->radius = 1.0f;
 
 	sphere[1]->center = { 1.0f,0.0f,1.0f };
-	sphere[1]->radius = 0.4f;
+	sphere[1]->radius = 0.4f;*/
+
+	//Sphere* sphere;
+	//sphere->radius = 1.0f;
 
 	uint32_t colors[2] = { WHITE,WHITE };
 
@@ -85,17 +88,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bezier[2].controlPositions = { -0.94f,-0.7f,2.3f };
 
 	Bone bone[3];
-	bone[0].translates = { 0.2f,1.0f,0.0f };
-	bone[1].translates = { 0.4f,0.0f,0.0f };
-	bone[2].translates = { 0.3f,0.0f,0.0f };
 
-	bone[0].rotates = { 0.0f,0.0f,-6.8f };
-	bone[1].rotates = { 0.0f,0.0f,-1.4f };
-	bone[2].rotates = { 0.0f,0.0f,0.0f };
+	bone[0].parentIndex = -1; // 肩はルートなので親なし
+	bone[0].translates = { 0.2f, 1.0f, 0.0f };
+	bone[0].rotates = { 0.0f, 0.0f, -6.8f };
+	bone[0].scales = { 1.0f, 1.0f, 1.0f };
+	
 
-	bone[0].scales = { 1.0f,1.0f,1.0f };
-	bone[1].scales = { 1.0f,1.0f,1.0f };
-	bone[2].scales = { 1.0f,1.0f,1.0f };
+	bone[1].parentIndex = 0;  // 肘は肩が親
+	bone[1].translates = { 0.4f, 0.0f, 0.0f };
+	bone[1].rotates = { 0.0f, 0.0f, -1.4f };
+	bone[1].scales = { 1.0f, 1.0f, 1.0f };
+
+	bone[2].parentIndex = 1;  // 手は肘が親
+	bone[2].translates = { 0.3f, 0.0f, 0.0f };
+	bone[2].rotates = { 0.0f, 0.0f, 0.0f };
+	bone[2].scales = { 1.0f, 1.0f, 1.0f };
+
+	bone[0].radius = 0.001f; // 肩の半径
+	bone[1].radius = 0.05f; // 肘の半径
+	bone[2].radius = 0.05f; // 手の半径
+
+	/*Sphere* sphere = new Sphere();
+	sphere->center = { 0.2f, 1.0f, 0.0f };
+	sphere->radius = 1.0f;*/
 
 	// マウス状態
 	int prevMouseX = 0;
@@ -221,11 +237,47 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		/*	ImGui::DragFloat3("aabb2.min", &aabb[1].min.x, 0.1f);
 			ImGui::DragFloat3("aabb2.max", &aabb[1].max.x, 0.1f);*/
 
-		DrawBezier(bezier[0].controlPositions, bezier[1].controlPositions, bezier[2].controlPositions,
+		//ベジエ曲線の描画
+		/*DrawBezier(bezier[0].controlPositions, bezier[1].controlPositions, bezier[2].controlPositions,
 			viewProjectMatrix, viewportMatrix, BLUE);
 		ImGui::DragFloat3("controlPosition[0]", &bezier[0].controlPositions.x, 0.1f);
 		ImGui::DragFloat3("controlPosition[1]", &bezier[1].controlPositions.x, 0.1f);
-		ImGui::DragFloat3("controlPosition[2]", &bezier[2].controlPositions.x, 0.1f);
+		ImGui::DragFloat3("controlPosition[2]", &bezier[2].controlPositions.x, 0.1f);*/
+
+		DrawBone(bone, 3,viewProjectMatrix,viewportMatrix);
+		ImGui::DragFloat3("BoneTranslates[0]", &bone[0].translates.x, 0.1f);
+		ImGui::DragFloat3("BoneRotates[0]", &bone[0].rotates.x, 0.1f);
+		ImGui::DragFloat3("BoneScales[0]", &bone[0].scales.x, 0.1f);
+		ImGui::DragFloat3("BonePosition[1]", &bone[1].translates.x, 0.1f);
+		ImGui::DragFloat3("BoneRotates[1]", &bone[1].rotates.x, 0.1f);
+		ImGui::DragFloat3("BoneScales[1]", &bone[1].scales.x, 0.1f);
+		ImGui::DragFloat3("BonePosition[2]", &bone[2].translates.x, 0.1f);
+		ImGui::DragFloat3("BoneRotates[2]", &bone[2].rotates.x, 0.1f);
+		ImGui::DragFloat3("BoneScales[2]", &bone[2].scales.x, 0.1f);
+
+		//Matrix4x4 localMatrix0 =
+		//	MakeScaleMatrix(bone[0].scales) *
+		//	MakeRotateMatrix(bone[0].rotates) *
+		//	MakeTranslateMatrix(bone[0].translates);
+		//Matrix4x4 worldMatrix0 = localMatrix0; // parentIndex == -1 なのでそのまま
+
+		//Vector3 testJointPos = VectorTransform(Vector3{ 0, 0, 0 }, worldMatrix0);
+
+		//Sphere testSphere;
+		//testSphere.center = testJointPos;
+		//testSphere.radius = 0.5f; // ★描画されるか確認するため、少し大きめの半径を試す（例: 0.5f や 1.0f）
+
+		//DrawSphere(testSphere, viewProjectMatrix, viewportMatrix, 0x00FF00FF); // マゼンタなど目立つ色
+		//// ここまで追加
+
+		//ImGui::DragFloat3("Sphere0 Center", &sphere->center.x, 0.01f);
+		//ImGui::DragFloat("Sphere0 Radius", &sphere->radius, 0.01f);
+
+		
+	/*	DrawSphere(*sphere, viewProjectMatrix, viewportMatrix, WHITE);
+
+		ImGui::DragFloat3("Sphere0 Center", &sphere->center.x, 0.01f);
+		ImGui::DragFloat("Sphere0 Radius", &sphere->radius, 0.01f);*/
 
 		ImGui::End();
 
