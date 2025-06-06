@@ -35,89 +35,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Vector3 cameraTranslate(0.0f, 1.9f, -6.49f);
 	Vector3 cameraRotate(0.26f, 0.0f, 0.0f);
 
-	/*uint32_t LineColor = 0x000000FF;*/
-
-	
-
-	Plane* plane = new Plane();
-	plane->normal = Normalize({ 1.0f, 1.0f, 0.0f });
-	plane->distance = 0.0f;
-
-	/*Sphere* sphere[2];
-	sphere[0] = new Sphere();
-	sphere[1] = new Sphere();
-
-	sphere[0]->center = { 0.0f,0.0f,0.0f };
-	sphere[0]->radius = 1.0f;
-
-	sphere[1]->center = { 1.0f,0.0f,1.0f };
-	sphere[1]->radius = 0.4f;*/
-
-	//Sphere* sphere;
-	//sphere->radius = 1.0f;
-
-	uint32_t colors[2] = { WHITE,WHITE };
-
-
-	Segment segment;
-
-	//値変えられるようにする
-	segment.origin = { -0.7f, 0.3f, 0.0f };
-	segment.diff = VectorSubtract({ 2.0f, -0.5f, 0.0f }, segment.origin);  // 初期値として差分を設定;
-
-	Vector3 point{ -1.5f,0.6f,0.6f };
-
-	Vector3 project = VectorProject(VectorSubtract(point, segment.origin), segment.diff);
-	Vector3 closestPoint = VectorClosestPoint(point, segment);
-
-	/*Triangle triangle;
-	triangle.vertices[0] = { -1.0f,0.0f,0.0f };
-	triangle.vertices[1] = { 0.0f,1.0f,0.0f };
-	triangle.vertices[2] = { 1.0f,0.0f,0.0f };*/
-
-	AABB aabb[2];
-	aabb[0].min = { -0.5f,-0.5f,-0.5f };
-	aabb[0].max = { 0.5f,0.5f,0.5f };
-
-	aabb[1].min = { 0.2f,0.2f,0.2f };
-	aabb[1].max = { 1.0f,1.0f,1.0f };
-
-	Bezier bezier[3];
-	bezier[0].controlPositions = { -0.8f,0.58f,1.0f };
-	bezier[1].controlPositions = { -1.76f,1.0f,-0.3f };
-	bezier[2].controlPositions = { -0.94f,-0.7f,2.3f };
-
-	Bone bone[3];
-
-	bone[0].parentIndex = -1; // 肩はルートなので親なし
-	bone[0].translates = { 0.2f, 1.0f, 0.0f };
-	bone[0].rotates = { 0.0f, 0.0f, -6.8f };
-	bone[0].scales = { 1.0f, 1.0f, 1.0f };
-	
-
-	bone[1].parentIndex = 0;  // 肘は肩が親
-	bone[1].translates = { 0.4f, 0.0f, 0.0f };
-	bone[1].rotates = { 0.0f, 0.0f, -1.4f };
-	bone[1].scales = { 1.0f, 1.0f, 1.0f };
-
-	bone[2].parentIndex = 1;  // 手は肘が親
-	bone[2].translates = { 0.3f, 0.0f, 0.0f };
-	bone[2].rotates = { 0.0f, 0.0f, 0.0f };
-	bone[2].scales = { 1.0f, 1.0f, 1.0f };
-
-	bone[0].radius = 0.001f; // 肩の半径
-	bone[1].radius = 0.05f; // 肘の半径
-	bone[2].radius = 0.05f; // 手の半径
-
-	/*Sphere* sphere = new Sphere();
-	sphere->center = { 0.2f, 1.0f, 0.0f };
-	sphere->radius = 1.0f;*/
 
 	// マウス状態
 	int prevMouseX = 0;
 	int prevMouseY = 0;
 
 	bool isDebug_ = false;
+
+	Vector3 a{ 0.2f,1.0f,0.0f };
+	Vector3 b{ 2.4f,3.1f,1.2f };
+	Vector3 c = a + b;
+	Vector3 d = a - b;
+	Vector3 e = a * 2.4f;
+
+	Vector3 rotate{ 0.4f,1.43f,-0.8f };
+
+	Matrix4x4 rotateXMatrix = MakeRotateXFloatMatrix(rotate.x);
+	Matrix4x4 rotateYMatrix = MakeRotateYFloatMatrix(rotate.y);
+	Matrix4x4 rotateZMatrix = MakeRotateZFloatMatrix(rotate.z);
+
+	Matrix4x4 rotateMatrix = rotateXMatrix * rotateYMatrix * rotateZMatrix;
+
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0)
@@ -177,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 		}
 
-		plane->distance = VectorDot(plane->normal, { 1.0f, 0.0f, 0.0f });
+		
 
 		Matrix4x4 cameraWorld = MakeAffineMatrix(
 			{ 1,1,1 },
@@ -191,7 +129,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		Matrix4x4 viewProjectMatrix = Multiply(viewMatrix, projectionMatrix);
 
-		Prependicular(plane->normal);
+		
 
 
 		///
@@ -202,82 +140,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		/// ↓描画処理ここから
 		///
 
-		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
-		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
+		//ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
+		//ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
 		DrawGrid(viewProjectMatrix, viewportMatrix);
 
-		/*sphere[0]->DrawSphere(*sphere[0], viewProjectMatrix, viewportMatrix, WHITE);
-		ImGui::DragFloat3("Sphere.center", &sphere[0]->center.x, 0.1f);
-		ImGui::DragFloat("SphereRadius", &sphere[0]->radius, 0.1f);*/
+		ImGui::Begin("Windows");
+		ImGui::Text("c:%f,%f,%f", c.x, c.y, c.z);
+		ImGui::Text("d:%f,%f,%f", d.x, d.y, d.z);
+		ImGui::Text("e:%f,%f,%f", e.x, e.y, e.z);
+		ImGui::Text("matix\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n",
+			rotateMatrix.m[0][0], rotateMatrix.m[0][1], rotateMatrix.m[0][2], rotateMatrix.m[0][3],
+			rotateMatrix.m[1][0], rotateMatrix.m[1][1], rotateMatrix.m[1][2], rotateMatrix.m[1][3],
+			rotateMatrix.m[2][0], rotateMatrix.m[2][1], rotateMatrix.m[2][2], rotateMatrix.m[2][3],
+			rotateMatrix.m[3][0], rotateMatrix.m[3][1], rotateMatrix.m[3][2], rotateMatrix.m[3][3]);
 
-		
-
-		//SegmentDraw(segment, viewProjectMatrix, viewportMatrix,WHITE);
-		//ImGui::DragFloat3("Segment.Origine", &segment.origin.x, 0.01f);
-		//ImGui::DragFloat3("Segment.Diff", &segment.diff.x, 0.01f);
-
-		/*ImGui::DragFloat3("Plane.Normal", &plane->normal.x, 0.01f);
-		plane->normal = Normalize(plane->normal);*/
-
-
-
-		/*DrawTriangle(triangle, viewProjectMatrix, viewportMatrix, WHITE);
-		ImGui::DragFloat3("Trianglev0", &triangle.vertices[0].x, 0.01f);
-		ImGui::DragFloat3("Trianglev1", &triangle.vertices[1].x, 0.01f);
-		ImGui::DragFloat3("Trianglev2", &triangle.vertices[2].x, 0.01f);*/
-
-		/*DrawAABB(aabb[0], viewProjectMatrix, viewportMatrix, colors[0]);*/
-		/*DrawAABB(aabb[1], viewProjectMatrix, viewportMatrix, WHITE);*/
-
-
-
-		/*ImGui::DragFloat3("aabb0.min", &aabb[0].min.x, 0.1f);
-		ImGui::DragFloat3("aabb0.max", &aabb[0].max.x, 0.1f);*/
-		/*	ImGui::DragFloat3("aabb2.min", &aabb[1].min.x, 0.1f);
-			ImGui::DragFloat3("aabb2.max", &aabb[1].max.x, 0.1f);*/
-
-		//ベジエ曲線の描画
-		/*DrawBezier(bezier[0].controlPositions, bezier[1].controlPositions, bezier[2].controlPositions,
-			viewProjectMatrix, viewportMatrix, BLUE);
-		ImGui::DragFloat3("controlPosition[0]", &bezier[0].controlPositions.x, 0.1f);
-		ImGui::DragFloat3("controlPosition[1]", &bezier[1].controlPositions.x, 0.1f);
-		ImGui::DragFloat3("controlPosition[2]", &bezier[2].controlPositions.x, 0.1f);*/
-
-		DrawBone(bone, 3,viewProjectMatrix,viewportMatrix);
-		ImGui::DragFloat3("BoneTranslates[0]", &bone[0].translates.x, 0.1f);
-		ImGui::DragFloat3("BoneRotates[0]", &bone[0].rotates.x, 0.1f);
-		ImGui::DragFloat3("BoneScales[0]", &bone[0].scales.x, 0.1f);
-		ImGui::DragFloat3("BonePosition[1]", &bone[1].translates.x, 0.1f);
-		ImGui::DragFloat3("BoneRotates[1]", &bone[1].rotates.x, 0.1f);
-		ImGui::DragFloat3("BoneScales[1]", &bone[1].scales.x, 0.1f);
-		ImGui::DragFloat3("BonePosition[2]", &bone[2].translates.x, 0.1f);
-		ImGui::DragFloat3("BoneRotates[2]", &bone[2].rotates.x, 0.1f);
-		ImGui::DragFloat3("BoneScales[2]", &bone[2].scales.x, 0.1f);
-
-		//Matrix4x4 localMatrix0 =
-		//	MakeScaleMatrix(bone[0].scales) *
-		//	MakeRotateMatrix(bone[0].rotates) *
-		//	MakeTranslateMatrix(bone[0].translates);
-		//Matrix4x4 worldMatrix0 = localMatrix0; // parentIndex == -1 なのでそのまま
-
-		//Vector3 testJointPos = VectorTransform(Vector3{ 0, 0, 0 }, worldMatrix0);
-
-		//Sphere testSphere;
-		//testSphere.center = testJointPos;
-		//testSphere.radius = 0.5f; // ★描画されるか確認するため、少し大きめの半径を試す（例: 0.5f や 1.0f）
-
-		//DrawSphere(testSphere, viewProjectMatrix, viewportMatrix, 0x00FF00FF); // マゼンタなど目立つ色
-		//// ここまで追加
-
-		//ImGui::DragFloat3("Sphere0 Center", &sphere->center.x, 0.01f);
-		//ImGui::DragFloat("Sphere0 Radius", &sphere->radius, 0.01f);
-
-		
-	/*	DrawSphere(*sphere, viewProjectMatrix, viewportMatrix, WHITE);
-
-		ImGui::DragFloat3("Sphere0 Center", &sphere->center.x, 0.01f);
-		ImGui::DragFloat("Sphere0 Radius", &sphere->radius, 0.01f);*/
 
 		ImGui::End();
 
