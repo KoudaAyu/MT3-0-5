@@ -1,26 +1,42 @@
 #include <Novice.h>
+#include"Matrix4x4.h"
 #include"Struct.h"
 #include"Const.h"
-#include"Matrix4x4.h"
 
 
 const char kWindowTitle[] = "学籍番号";
 
 // Windowsアプリでのエントリーポイント(main関数)
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+{
 
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
 	// キー入力結果を受け取る箱
-	char keys[256] = {0};
-	char preKeys[256] = {0};
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
 
-	Vector3 scale = { 1.2f,-.79f,-2.1f };
-	Vector3 rotate = { 0.4f,1.43f,-0.8f };
-	Vector3 translate = { 2.7f,-4.15f,1.57f };
+	Vector3 translate{ 4.1f,2.6f,0.8f };
+	Vector3 scale{ 1.5f,5.2f,7.3f };
+	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
+	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
+	Vector3 point{ 2.3f,3.8f,1.4f };
+	Matrix4x4 transformMatrix = {
+	{
+		{1.0f, 2.0f, 3.0f, 4.0f},
+		{3.0f, 1.0f, 1.0f, 2.0f},
+		{1.0f, 4.0f, 2.0f, 3.0f},
+		{2.0f, 2.0f, 1.0f, 3.0f}
+	}
+	};
+
+	Vector3 transformd = VectorTransform(point, transformMatrix);
+	;
+
 	// ウィンドウの×ボタンが押されるまでループ
-	while (Novice::ProcessMessage() == 0) {
+	while (Novice::ProcessMessage() == 0)
+	{
 		// フレームの開始
 		Novice::BeginFrame();
 
@@ -31,8 +47,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-
-		Matrix4x4 worldMatrix = MakeAffineMatrix(scale, rotate, translate);
+		VectorScreenPrintf(0, 0, transformd, "transformd");
+		MatrixScreenPrintf(0, kRowHeight * 2, translateMatrix, "translateMatrix");
+		MatrixScreenPrintf(0, kRowHeight * 2 * 4, scaleMatrix, "scaleMatrix");
 
 		///
 		/// ↑更新処理ここまで
@@ -42,8 +59,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		MatrixScreenPrintf(0, 0, worldMatrix, "worldmatrix");
-
 		///
 		/// ↑描画処理ここまで
 		///
@@ -52,7 +67,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::EndFrame();
 
 		// ESCキーが押されたらループを抜ける
-		if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
+		if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0)
+		{
 			break;
 		}
 	}
