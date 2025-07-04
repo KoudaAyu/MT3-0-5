@@ -160,6 +160,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="Spring.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Vector.h" />
