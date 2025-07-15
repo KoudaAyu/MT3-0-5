@@ -43,7 +43,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	uint32_t colors[2] = { WHITE,WHITE };
 
-	float distance = 0.0f;
+
 
 	Segment segment{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
 	Vector3 point{ -1.5f,0.6f,0.6f };
@@ -126,16 +126,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
 		Matrix4x4 viewProjectMatrix = Multiply(viewMatrix, projectionMatrix);
 		
-		distance = Sphere::GetDistanceBetweenCenters(*sphere[0], *sphere[1]);
+		// sphere[0], sphere[1] は Sphere*
+		colors[0] = Sphere::IsIntersect(*sphere[0], *sphere[1]) ? RED : WHITE;
 
-		if (distance < sphere[0]->radius + sphere[1]->radius)
-		{
-			colors[0] = RED;
-		}
-		else
-		{
-			colors[0] = WHITE;
-		}
 
 		///
 		/// ↑更新処理ここまで
