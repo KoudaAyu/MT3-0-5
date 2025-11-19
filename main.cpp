@@ -117,17 +117,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		
 
-		Matrix4x4 cameraWorld = MakeAffineMatrix(
-			{ 1,1,1 },
-			cameraRotate,
-			cameraTranslate);
-
-		Matrix4x4 viewMatrix = Inverse(cameraWorld);
-
-		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(float(3.14 / 4.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
-		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, 1280, 720, 0.0f, 0.0f);
-
-		Matrix4x4 viewProjectMatrix = Multiply(viewMatrix, projectionMatrix);
+		
 
 		
 
@@ -143,17 +133,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		//ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
-		DrawGrid(viewProjectMatrix, viewportMatrix);
+		Vector3 axis = { 1.0f,1.0f,1.0f };
+		float angle = 0.44f;
+		Matrix4x4 rotateAxisAngleMatrix = MakeRotateAxisAngle(axis, angle);
+		MatrixScreenPrintfNoLabel(0, 0, rotateAxisAngleMatrix);
+
 
 		ImGui::Begin("Windows");
-		ImGui::Text("c:%f,%f,%f", c.x, c.y, c.z);
-		ImGui::Text("d:%f,%f,%f", d.x, d.y, d.z);
-		ImGui::Text("e:%f,%f,%f", e.x, e.y, e.z);
-		ImGui::Text("matix\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n",
-			rotateMatrix.m[0][0], rotateMatrix.m[0][1], rotateMatrix.m[0][2], rotateMatrix.m[0][3],
-			rotateMatrix.m[1][0], rotateMatrix.m[1][1], rotateMatrix.m[1][2], rotateMatrix.m[1][3],
-			rotateMatrix.m[2][0], rotateMatrix.m[2][1], rotateMatrix.m[2][2], rotateMatrix.m[2][3],
-			rotateMatrix.m[3][0], rotateMatrix.m[3][1], rotateMatrix.m[3][2], rotateMatrix.m[3][3]);
+		
 
 
 		ImGui::End();
