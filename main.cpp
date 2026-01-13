@@ -42,18 +42,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	bool isDebug_ = false;
 
-	Vector3 from0 = Normalize(Vector3(1.0f, 0.7f, 0.5f));
-	Vector3 to0 = -from0;
-	Vector3 from1 = Normalize(Vector3(-0.6f, 0.9f, 0.2f));
-	Vector3 to1 = Normalize(Vector3(0.4f, 0.7f, -0.5f));
-	Matrix4x4 rotateMatrix0 = DirectionToDirection(Normalize(Vector3(1.0f, 0.0f, 0.0f)), Normalize(Vector3(-1.0f, 0.0f, 0.0f)));
-	Matrix4x4 rotateMatrix1 = DirectionToDirection(from0, to0);
-	Matrix4x4 rotateMatrix2 = DirectionToDirection(from1, to1);
-
-
-
-
 	
+
+	// --- Quaternion sample calculation (compute once) ---
+	Quaternion q1 = { 2.0f, 3.0f, 4.0f, 1.0f };
+	Quaternion q2 = { 1.0f, 3.0f, 5.0f, 2.0f };
+
+	Quaternion identity = IdentityQuaternion();
+	Quaternion conj = Conjugate(q1);
+	Quaternion inv = Inverse(q1);
+	Quaternion normal = Normalize(q1);
+	Quaternion mul1 = Multiply(q1, q2);
+	Quaternion mul2 = Multiply(q2, q1);
+	float norm = Norm(q1);
 
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -118,9 +119,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		
 
-		
-
-
 		///
 		/// ↑更新処理ここまで
 		///
@@ -134,14 +132,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		
 
-
 		ImGui::Begin("Windows");
 		ImGui::End();
 
-		// Print rotation matrices with labels on the right side
-		MatrixScreenPrintf(900, 40, rotateMatrix0, "rotateMatrix0");
-		MatrixScreenPrintf(900, 40 + kRowHeight * 5, rotateMatrix1, "rotateMatrix1");
-		MatrixScreenPrintf(900, 40 + kRowHeight * 10, rotateMatrix2, "rotateMatrix2");
+		// Print quaternion results on the left
+		int qx = 40;
+		int qy = 40;
+		Novice::ScreenPrintf(qx, qy + kRowHeight * 0, "%6.02f %6.02f %6.02f %6.02f : q1", q1.x, q1.y, q1.z, q1.w);
+		Novice::ScreenPrintf(qx, qy + kRowHeight * 1, "%6.02f %6.02f %6.02f %6.02f : q2", q2.x, q2.y, q2.z, q2.w);
+		Novice::ScreenPrintf(qx, qy + kRowHeight * 2, "%6.02f %6.02f %6.02f %6.02f : Identity", identity.x, identity.y, identity.z, identity.w);
+		Novice::ScreenPrintf(qx, qy + kRowHeight * 3, "%6.02f %6.02f %6.02f %6.02f : Conjugate", conj.x, conj.y, conj.z, conj.w);
+		Novice::ScreenPrintf(qx, qy + kRowHeight * 4, "%6.02f %6.02f %6.02f %6.02f : Inverse", inv.x, inv.y, inv.z, inv.w);
+		Novice::ScreenPrintf(qx, qy + kRowHeight * 5, "%6.02f %6.02f %6.02f %6.02f : Normalize", normal.x, normal.y, normal.z, normal.w);
+		Novice::ScreenPrintf(qx, qy + kRowHeight * 6, "%6.02f %6.02f %6.02f %6.02f : Multiply(q1, q2)", mul1.x, mul1.y, mul1.z, mul1.w);
+		Novice::ScreenPrintf(qx, qy + kRowHeight * 7, "%6.02f %6.02f %6.02f %6.02f : Multiply(q2, q1)", mul2.x, mul2.y, mul2.z, mul2.w);
+		Novice::ScreenPrintf(qx, qy + kRowHeight * 8, "%6.02f : Norm", norm);
+
+	
 
 		///
 		/// ↑描画処理ここまで
