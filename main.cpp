@@ -42,19 +42,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	bool isDebug_ = false;
 
-	Vector3 a{ 0.2f,1.0f,0.0f };
-	Vector3 b{ 2.4f,3.1f,1.2f };
-	Vector3 c = a + b;
-	Vector3 d = a - b;
-	Vector3 e = a * 2.4f;
+	Vector3 from0 = Normalize(Vector3(1.0f, 0.7f, 0.5f));
+	Vector3 to0 = -from0;
+	Vector3 from1 = Normalize(Vector3(-0.6f, 0.9f, 0.2f));
+	Vector3 to1 = Normalize(Vector3(0.4f, 0.7f, -0.5f));
+	Matrix4x4 rotateMatrix0 = DirectionToDirection(Normalize(Vector3(1.0f, 0.0f, 0.0f)), Normalize(Vector3(-1.0f, 0.0f, 0.0f)));
+	Matrix4x4 rotateMatrix1 = DirectionToDirection(from0, to0);
+	Matrix4x4 rotateMatrix2 = DirectionToDirection(from1, to1);
 
-	Vector3 rotate{ 0.4f,1.43f,-0.8f };
 
-	Matrix4x4 rotateXMatrix = MakeRotateXFloatMatrix(rotate.x);
-	Matrix4x4 rotateYMatrix = MakeRotateYFloatMatrix(rotate.y);
-	Matrix4x4 rotateZMatrix = MakeRotateZFloatMatrix(rotate.z);
 
-	Matrix4x4 rotateMatrix = rotateXMatrix * rotateYMatrix * rotateZMatrix;
+
+	
 
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -133,18 +132,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		//ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 
-		Vector3 axis = { 1.0f,1.0f,1.0f };
-		float angle = 0.44f;
-		Matrix4x4 rotateAxisAngleMatrix = MakeRotateAxisAngle(axis, angle);
-		MatrixScreenPrintfNoLabel(0, 0, rotateAxisAngleMatrix);
-
-
-		ImGui::Begin("Windows");
 		
 
 
+		ImGui::Begin("Windows");
 		ImGui::End();
 
+		// Print rotation matrices with labels on the right side
+		MatrixScreenPrintf(900, 40, rotateMatrix0, "rotateMatrix0");
+		MatrixScreenPrintf(900, 40 + kRowHeight * 5, rotateMatrix1, "rotateMatrix1");
+		MatrixScreenPrintf(900, 40 + kRowHeight * 10, rotateMatrix2, "rotateMatrix2");
 
 		///
 		/// ↑描画処理ここまで
