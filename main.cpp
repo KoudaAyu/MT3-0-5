@@ -16,9 +16,7 @@
 #include"Sphere.h"
 #include"Triangle.h"
 #include"Vector.h"
-
-
-
+
 const char kWindowTitle[] = "学籍番号";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -53,6 +51,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Vector3 rotateByQuaternion = RotateVector(pointY, rotation);
 	Vector3 rotateByMatrix = VectorTransform(pointY, rotateMatrix);
 
+	// --- Slerp 実行例 (表示用) ---
+	// NOTE: moved into the render loop to avoid duplicate local declarations
+	Quaternion rotation0 = MakeRotateAxisAngleQuaternion(Normalize(Vector3{ 0.71f, 0.71f, 0.0f }), 0.3f);
+	Quaternion rotation1 = MakeRotateAxisAngleQuaternion(Normalize(Vector3{ 0.71f, 0.0f, 0.71f }), 3.141592f);
+	Quaternion interpolate0 = Slerp(rotation0, rotation1, 0.0f);
+	Quaternion interpolate1 = Slerp(rotation0, rotation1, 0.3f);
+	Quaternion interpolate2 = Slerp(rotation0, rotation1, 0.5f);
+	Quaternion interpolate3 = Slerp(rotation0, rotation1, 0.7f);
+	Quaternion interpolate4 = Slerp(rotation0, rotation1, 1.0f);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0)
@@ -138,12 +145,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		int rx = 420;
 		int ry = 40;
 		
-		Novice::ScreenPrintf(rx, ry + kRowHeight * 0, "%6.02f %6.02f %6.02f %6.02f : rotation", rotation.x, rotation.y, rotation.z, rotation.w);
+	
+
 		
-		MatrixScreenPrintf(rx, ry + kRowHeight * 1, rotateMatrix, " : rotateMatrix");
+
 		
-		VectorScreenPrintf(rx, ry + kRowHeight * 6, rotateByQuaternion, " : rotateByQuaternion");
-		VectorScreenPrintf(rx, ry + kRowHeight * 9, rotateByMatrix, " : rotateByMatrix");
+		
+		Novice::ScreenPrintf(rx, ry + kRowHeight * 12, "%6.02f %6.02f %6.02f %6.02f : rotation0", rotation0.x, rotation0.y, rotation0.z, rotation0.w);
+		Novice::ScreenPrintf(rx, ry + kRowHeight * 13, "%6.02f %6.02f %6.02f %6.02f : rotation1", rotation1.x, rotation1.y, rotation1.z, rotation1.w);
+		Novice::ScreenPrintf(rx, ry + kRowHeight * 14, "%6.02f %6.02f %6.02f %6.02f : interpolate0", interpolate0.x, interpolate0.y, interpolate0.z, interpolate0.w);
+		Novice::ScreenPrintf(rx, ry + kRowHeight * 15, "%6.02f %6.02f %6.02f %6.02f : interpolate1", interpolate1.x, interpolate1.y, interpolate1.z, interpolate1.w);
+		Novice::ScreenPrintf(rx, ry + kRowHeight * 16, "%6.02f %6.02f %6.02f %6.02f : interpolate2", interpolate2.x, interpolate2.y, interpolate2.z, interpolate2.w);
+		Novice::ScreenPrintf(rx, ry + kRowHeight * 17, "%6.02f %6.02f %6.02f %6.02f : interpolate3", interpolate3.x, interpolate3.y, interpolate3.z, interpolate3.w);
+		Novice::ScreenPrintf(rx, ry + kRowHeight * 18, "%6.02f %6.02f %6.02f %6.02f : interpolate4", interpolate4.x, interpolate4.y, interpolate4.z, interpolate4.w);
 
 		///
 		/// ↑描画処理ここまで
